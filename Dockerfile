@@ -23,9 +23,15 @@ RUN set -ex \
     nmap \
     conntrack-tools \
     socat
-# apparmor issue #14140
+# apparmor issue #1414s
+RUN addgroup -g 433 swuser && \
+adduser -u 431 -G swuser -h /home/swuser -s /sbin/nologin -g "Docker image user" swuser -D && \
+mkdir -p /home/swuser && \
+chown -R swuser:swuser /home/swuser
 RUN mv /usr/sbin/tcpdump /usr/bin/tcpdump
 
 ADD netgen.sh /usr/local/bin/netgen
+ADD sleep.sh /usr/local/bin/run_on_boot
 
-CMD ["sh"]
+USER swuser
+CMD ["run_on_boot"]
